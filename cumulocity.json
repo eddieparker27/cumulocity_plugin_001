@@ -1,0 +1,12 @@
+{
+    "availability": "PRIVATE",
+    "contextPath": "cumulocity_plugin_001",
+    "key": "cumulocity_plugin_001-appkey",
+    "name": "Eds Plugin 001",
+    "resourcesUrl": "/",
+    "type": "HOSTED",
+    "imports": [
+        "core/c8yBranding",
+        "cumulocity_plugin_001/edsplugin001"
+    ]
+}
