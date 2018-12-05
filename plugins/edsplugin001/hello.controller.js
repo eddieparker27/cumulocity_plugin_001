@@ -3,7 +3,10 @@
 
   angular
     .module('myapp.hello')
-    .controller('HelloController', ['$scope', function ($scope) {
+    .controller('HelloController', function ($scope, $http) {
+
+    var vm = this;
+
 
     $scope.canvasWidth = 400;
     $scope.canvasHeight = 400;
@@ -11,7 +14,16 @@
     $scope.scale = 1;
     $scope.materialType = 'lambert';
 
-  }]);
+    $http.get('https://edsdemo.cumulocity.com/measurement/measurements?source=299&dateFrom=2018-12-04T14:20:20Z&dateTo=2018-12-04T14:20:25Z')
+        .then(function(response) {
+            vm.text = response.data;
+        }, function(response) {
+            vm.text = 'ERROR in http';
+        });
+
+    //vm.text = 'hello, world twice';
+
+  });
 
 //HelloController);
 
