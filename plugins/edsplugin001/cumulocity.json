@@ -8,6 +8,7 @@
     "hello.module.js",
     "hello.config.js",
     "hello.controller.js",
-    "three.js"
+    "three.js",
+    "lib.js"
     ]
 }
