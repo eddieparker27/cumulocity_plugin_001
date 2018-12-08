@@ -10,6 +10,9 @@
         'height': '=',
         'fillcontainer': '=',
         'scale': '=',
+        'dx': '=',
+        'dy': '=',
+        'dz': '=',
         'materialType': '='
       },
       link: function postLink(scope, element, attrs) {
@@ -72,7 +75,7 @@
 
           var color, f, p, n, vertexIndex,
             radius = 200,
-            geometry  = new THREE.IcosahedronGeometry( radius, 1 );
+            geometry  = new THREE.CubeGeometry( 400, 50, 100 );
 
 
           for (var i = 0; i < geometry.faces.length; i ++) {
@@ -136,6 +139,19 @@
 
         };
 
+        scope.quaternionBetweenVectors = function(vecStart, vecEnd)
+        {
+           var u = new THREE.Vector3().copy(vecStart).normalize();
+           var v = new THREE.Vector3().copy(vecEnd).normalize();
+           var cos_theta = Math.min(u.dot(v), 1.0);
+      
+           var half_cos = Math.sqrt(0.5 * (1.0 + cos_theta));
+           var half_sin = Math.sqrt(0.5 * (1.0 - cos_theta));
+           var w = new THREE.Vector3();
+           w.crossVectors(u, v).normalize().multiplyScalar(half_sin);
+           return new THREE.Quaternion(w.x, w.y, w.z, half_cos);
+        };
+
         // -----------------------------------
         // Event listeners
         // -----------------------------------
@@ -178,6 +194,16 @@
 
         };
 
+        scope.setRotation = function () {
+          var gravity = new THREE.Vector3(scope.dx, scope.dy, scope.dz);
+          gravity = gravity.normalize();
+          var up = new THREE.Vector3(0, 1, 0);
+          var quaternion = scope.quaternionBetweenVectors(up, gravity);
+          
+          icosahedron.rotation.setFromQuaternion( quaternion );
+          //icosahedron.rotation.set(scope.dx, scope.dy, scope.dz);
+        };
+
         scope.changeMaterial = function () {
 
           icosahedron.material = materials[scope.materialType];
@@ -198,7 +224,7 @@
 
         scope.render = function () {
 
-          camera.position.x += ( mouseX - camera.position.x ) * 0.05;
+          // camera.position.x += ( mouseX - camera.position.x ) * 0.05;
           // camera.position.y += ( - mouseY - camera.position.y ) * 0.05;
 
           camera.lookAt( scene.position );
@@ -219,6 +245,24 @@
         scope.$watch('scale', function () {
         
           scope.resizeObject();
+        
+        });
+
+        scope.$watch('dx', function () {
+        
+          scope.setRotation();
+        
+        });
+
+        scope.$watch('dy', function () {
+        
+          scope.setRotation();
+        
+        });
+
+        scope.$watch('dz', function () {
+        
+          scope.setRotation();
         
         });
 
